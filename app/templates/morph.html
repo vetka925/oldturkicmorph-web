@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container">
+  <h1>Oldturkicmorph</h1>
+  <form action="{{ url_for('analysis') }}" method="POST">
+    <div class="form-group">
+      <input type="text" name="word" id="input-word" class="form-control" placeholder="ҡәблендәндүр" required autofocus value={{request.form.word}}>
+      <small id="Help" class="form-text text-muted">Введите слово башкирской кириллицей</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Разобрать</button>
+  </form>
+
+</div>
+{% endblock %}
