@@ -13,7 +13,7 @@ from morph import lemmas_dict as lem
 from config import basedir
 from app import models, db
 
-if modlels.Graph.query.filter_by(language='oldturkic').first() != None:
+if models.Graph.query.filter_by(language='oldturkic').first() != None:
     G = pickle.loads(modlels.Graph.query.filter_by(language='oldturkic').first().graph)
 
 def get_lem(word):
