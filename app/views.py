@@ -2,7 +2,6 @@ import datetime
 from flask import render_template, flash, redirect, request, url_for, session
 from app import app, db, models
 from .forms import InputWordForm
-from passlib.hash import sha256_crypt
 from morph.parsing import Parsing
 #Home
 @app.route('/')
