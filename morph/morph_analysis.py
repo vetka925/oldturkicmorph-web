@@ -14,7 +14,7 @@ from config import basedir
 from app import models, db
 
 if models.Graph.query.filter_by(language='oldturkic').first() != None:
-    G = pickle.loads(modlels.Graph.query.filter_by(language='oldturkic').first().graph)
+    G = pickle.loads(models.Graph.query.filter_by(language='oldturkic').first().graph)
 
 def get_lem(word):
     result = {}
