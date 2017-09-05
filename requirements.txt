@@ -22,3 +22,4 @@ six
 speaklater
 sqlalchemy-migrate
 sqlparse
+networkx
