@@ -4,7 +4,7 @@ Created on Wed Apr  5 12:37:51 2017
 
 @author: vital
 """
-
+import pickle
 import networkx as nx
 import codecs
 import re
@@ -15,7 +15,7 @@ from app import models, db
 
 graph = basedir + "/Morph/graph.pickle"
 
-G = nx.read_gpickle(graph)
+G = pickle.loads(modlels.Graph.query.filter_by(language='oldtirkic').first().graph)
 
 def get_lem(word):
     result = {}

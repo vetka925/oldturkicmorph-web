@@ -34,3 +34,12 @@ class Parsings(db.Model):
 
     def __repr__(self):
         return '<Pars %r>' % (self.word)
+
+class Graph(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    language = db.Column(db.String())
+    graph = db.Column(db.PickleType)
+
+    def __init__(self, language, graph):
+        self.language = language
+        self.graph = graph
