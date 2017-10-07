@@ -2,46 +2,25 @@ import datetime
 from flask import render_template, flash, redirect, request, url_for, session
 from app import app, db, models
 from .forms import InputWordForm
-from morph.parsing import Parsing
+from morph.morph_analysis import pars_analyse
+from morph.morph_analysis import tag_interpretation
 #Home
 @app.route('/')
 def index():
     return render_template('home.html')
 
 #About
-@app.route('/about')
-def about():
+@app.route('/about_project')
+def about_project():
     return render_template('about.html')
 
-#Articles
-@app.route('/articles')
-def articles():
-    return render_template('articles.html', articles=articles)
+@app.route('/about_turki')
+def about_turki():
+    return render_template('turki.html')
 
-#Article
-@app.route('/article/<string:id>/')
-def article(id):
-    return render_template('article.html', id=id)
-
-#Registrtion
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm(request.form)
-    if request.method == 'POST' and form.validate():
-        name = form.name.data
-        email = form.email.data
-        username = form.username.data
-        password = sha256_crypt.encrypt(str(form.password.data))
-
-        #commit to db
-        user = models.User(name=name, email=email, username=username, password=password)
-        db.session.add(user)
-        db.session.commit()
-
-        redirect(url_for('index'))
-        flash = ('Вы зарегестрированы и теперь можете войти', 'success')
-        return redirect(url_for('index'))
-    return render_template('register.html', form=form )
+@app.route('/dictionary')
+def dictionary():
+    return render_template('dictionary.html')
 
 @app.route('/morph')
 def morph():
@@ -54,7 +33,24 @@ def morph():
 def analysis():
     form = InputWordForm(request.form)
     if form.validate():
-        word = form.word.data
-    parse = Parsing(word)
-    ma = parse.morph_analysis(1)
-    return render_template('analysis.html', word=word, ma=ma)
+        word = form.word.data.lower()
+    result = []
+    parses = pars_analyse(word)
+    if parses == []:
+        return render_template('analysis.html', word=word, res=result)
+    else:
+        for p in parses:
+            if len(p) < 2:
+                tmp_int = {}
+                for i in [0,1,2]:
+                    tmp_int[i] = tag_interpretation(p, i)
+                result.append(([p[0][0]+'+∅', ' + '.join(([str(m) for m in p]))], tmp_int))
+            else:
+                tmp = []
+                tmp_int = {}
+                for morpheme in p:
+                    tmp.append(morpheme[0])
+                for i in [0,1,2]:
+                    tmp_int[i] = tag_interpretation(p, i)
+                result.append((['+'.join(tmp), ' + '.join([str(m) for m in p])], tmp_int))
+        return render_template('analysis.html', word=word, res=result)

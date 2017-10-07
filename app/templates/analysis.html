@@ -16,17 +16,20 @@
 
   <div class="container">
 
-  <p><h2>{{ word }}</h2></p>
-
-
-  <div class = 'text-muted'><i>{{ ma }}</i></div>
-
-
-  <p><h4>Морфологические признаки:</h4></p>
-  <div class="jumbotron">
-        
-
+{% if res == [] %}
+  <div class = 'text-muted'><i>{{ word+'+∅' }}</i></div>
+{% else %}
+  {% for p in res %}
+  <p><h1>{{ res.index(p) + 1 }}.</h1> <h2>{{ p[0][0] }}</h2></p>
+    <div class = 'text-muted'><i>{{p[0][1]}}</i></div>
+    <p><h4>Морфологические признаки:</h4></p>
+    <div class="jumbotron">
+      <p><b>русский</b>: {{p[1][1]}}</p>
+      <p><b>english</b>: {{p[1][0]}}</p>
+      <p><b>башҡорт</b>:  {{p[1][2]}}</p>
+    </div>
   </div>
+{% endfor %}
+{% endif %}
 
-</div>
 {% endblock %}

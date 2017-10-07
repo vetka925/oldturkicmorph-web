@@ -6,6 +6,7 @@ class Lemmas(db.Model):
     pos = db.Column(db.String())
     bashkir_translate = db.Column(db.String())
     russian_translate = db.Column(db.String())
+    english_translate = db.Column(db.String())
     etimology = db.Column(db.String())
 
     def __init__(self, lemma, pos, bashkir_translate='None', russian_translate='None', etimology='None'):
@@ -37,9 +38,22 @@ class Parsings(db.Model):
 
 class Graph(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    language = db.Column(db.String())
+    lang = db.Column(db.String())
     graph = db.Column(db.PickleType)
 
-    def __init__(self, language, graph):
-        self.language = language
+    def __init__(self, lang, graph):
+        self.lang = lang
         self.graph = graph
+
+class Interpretation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tag = db.Column(db.String())
+    ru = db.Column(db.String())
+    en = db.Column(db.String())
+    bash = db.Column(db.String())
+
+    def __init__(self, tag, ru, en, bash):
+        self.tag = tag
+        self.ru = ru
+        self.en = en
+        self.bash = bash

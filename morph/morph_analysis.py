@@ -13,20 +13,20 @@ from morph import lemmas_dict as lem
 from config import basedir
 from app import models, db
 
-if models.Graph.query.filter_by(language='oldturkic').first() != None:
-    G = pickle.loads(models.Graph.query.filter_by(language='oldturkic').first().graph)
+G = pickle.loads(models.Graph.query.filter_by(lang='oldturkic').first().graph)
+
 
 def get_lem(word):
     result = {}
-    lemmas_dict = lem.lemmas_dict
-    if word in lemmas_dict:
-        result[word] = lemmas_dict[word]
+    if word in lem.lemmas_dict:
+        result[word] = lem.lemmas_dict[word]
     else:
-        for l in models.Lemmas.query.all():
-            if l.lemma == word[:len(l.lemma)]:
-                if l.pos not in dic.non_inflected:
-                    result[l.lemma] = l.pos
+        for lemma in lem.lemmas_dict:
+            if lemma == word[:len(lemma)]:
+                if lem.lemmas_dict[lemma] not in dic.non_inflected:
+                    result[lemma] = lem.lemmas_dict[lemma]
     return result
+
 
 def last_possible_aff(word):
     result = []
@@ -59,7 +59,7 @@ def one_step(lst):
 
 def check_for_lemma(list_of_possible_pars):
     lst = list_of_possible_pars
-    if lst[len(lst)-1][1] in lemmas_dict:
+    if lst[len(lst)-1][1] in lem.lemmas_dict:
         return lst
 
 
@@ -83,7 +83,6 @@ def predict_pos(first_aff):
             for p in dic.pos:
                 if p in G.successors(node):
                     result.append(p)
-
     res = '/'.join(result)
     return res
 
@@ -103,6 +102,15 @@ def reverse_pars(pars, word):
     result.reverse()
     return result
 
+def filter_pars(parses):
+    result = []
+    order = [5,4,6,3,7,8,9,10,11,12,13,14,15,16,17,18]
+    for l in order:
+        for p in parses:
+            if len(p[0][0]) == l:
+                result.append(p)
+    return result
+
 def parsing(word):
     start = last_possible_aff(word)
     while check_list_for_pars(start) == True:
@@ -116,12 +124,12 @@ def parsing(word):
         start = result
     return start
 
-def morph(w):
+def pars_analyse(w):
     possible_lemmas = get_lem(w)
     result = []
     if possible_lemmas != {}:
         if w in possible_lemmas:
-            return [(w, possible_lemmas[w])]
+            return [[(w, possible_lemmas[w])]]
         else:
             for l in possible_lemmas:
                 chain = w[len(l):]
@@ -129,13 +137,13 @@ def morph(w):
                 parses = [pars for pars in possible_parses if pars[len(pars)-1][1] == '']
                 for p in parses:
                     tmp = []
-                    for morph in p:
-                        tmp.append(morph[0])
-                    tmp.append((l, possible_lemmas[l]))
-                    tmp.reverse()
-                    result.append(tmp)
+                    if possible_lemmas[l] in predict_pos(p[len(p)-1][0]):
+                        for morph in p:
+                            tmp.append(morph[0])
+                        tmp.append((l, possible_lemmas[l]))
+                        tmp.reverse()
+                        result.append(tmp)
     if result == []:
-        print(w)
         possible_parses = parsing(w)
         for pars in possible_parses:
             tmp = []
@@ -147,12 +155,39 @@ def morph(w):
                 tmp.append(first_aff)
                 result.append(tmp)
             else:
-                print('yes')
                 for morph in pars:
                     tmp.append(morph[0])
                 tmp.append(first_aff)
                 tmp.append(lemma)
+                tmp.reverse()
                 result.append(tmp)
-                result.reverse()
-
+                result = filter_pars(result)
+    result = [e for i,e in enumerate(result) if e not in result[:i]]
     return result
+
+
+
+def tag_interpretation(pars, lang):
+    result = ""
+    for morpheme in pars:
+        tag = morpheme[1]
+        if ',' in tag:
+            tmp = tag.split(',')
+            for t in tmp:
+                if '/' in t:
+                    for tt in t.split('/'):
+                        result += dic.interpretation[tt][lang] + ' / '
+                    result += '+ '
+                else:
+                    result += dic.interpretation[t][lang] + ' + '
+        else:
+            if 'S' and 'SPRON' and 'ADJ' in tag.split('/'):
+                tag = 'NAME'
+                result += dic.interpretation[tag][lang] + ' + '
+            elif '/' in tag:
+                for t in tag.spilt('/'):
+                    result += dic.interpretation[tag][lang] + ' / '
+                result += '+ '
+            else:
+                result += dic.interpretation[tag][lang] + ' + '
+    return result[0:len(result)-3]
