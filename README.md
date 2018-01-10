@@ -2,3 +2,4 @@ This is app for morphological analysis of Oldturkic. Oldturkic is the book and w
 The app available here http://oldturkicmorph.herokuapp.com/morph
 
 Проект № 17-04-00193 «Исторический корпус башкирского языка» выполнен при поддержке Российского фонда фундаментальных исследований»
+Авторы: Фаткуллина Ф.Г. , Гречачин В.А. , Саитбатталов И.Р. 
