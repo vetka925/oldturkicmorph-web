@@ -17,7 +17,7 @@ itsdangerous==0.24
 pbr==2.1.0
 psycopg2
 python-openid
-pytz==2017.2
+pytz
 six==1.11.0
 speaklater==1.2
 sqlalchemy-migrate==0.11.0
