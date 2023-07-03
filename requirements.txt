@@ -3,7 +3,7 @@ Flask==0.12.2
 Flask-SQLAlchemy==2.2
 Flask-WTF==0.14
 Jinja2==2.10
-SQLAlchemy==1.1.14
+SQLAlchemy==1.3.0
 Tempita==0.5.2
 WTForms==2.1
 Werkzeug==0.13
