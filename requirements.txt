@@ -2,7 +2,7 @@ setuptools==45
 Flask==0.12.2
 Flask-SQLAlchemy==2.2
 Flask-WTF==0.14
-Jinja2==2.10
+Jinja2==2.11.3
 SQLAlchemy==1.1.14
 Tempita==0.5.2
 WTForms==2.1
