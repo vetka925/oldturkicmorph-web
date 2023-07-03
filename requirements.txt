@@ -20,6 +20,6 @@ python-openid
 pytz
 six==1.11.0
 speaklater==1.2
-sqlalchemy-migrate==0.11.0
+sqlalchemy-migrate=
 sqlparse==0.2.3
 networkx==2.0
